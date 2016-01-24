@@ -1,9 +1,11 @@
+# coding: utf-8
 from email.mime.text import MIMEText
-
+from sys import argv
 import boto3
 import os
 from email.mime.multipart import MIMEMultipart
 import homeKoalaApiClient
+import codecs
 
 #config
 fromEmailAddress = 'homekoala@doddrell.com'
@@ -16,12 +18,23 @@ def sendEmail(listings,destination):
 	msg['From'] = fromEmailAddress
 	msg['To'] = fromEmailAddress
 
-	messageBody = """We're excited to bring you today's updated listings!"""
+	messageBody = """"""
 
+	leftTemplate = codecs.open('./emailTemplateLeft.html', encoding='utf-8').read().encode('ascii', 'ignore')
+	rightTemplate = codecs.open('./emailTemplateRight.html', encoding='utf-8').read().encode('ascii', 'ignore')
+
+	isRightSide = True
 	for listing in listings:
-		messageBody += getMessageForSingleListing(listing)
+		if isRightSide:
+			messageBody += populateTemplate(rightTemplate,listing)
+		else:
+			messageBody += populateTemplate(leftTemplate,listing)
 
-	part = MIMEText(messageBody,'html')
+		isRightSide = not isRightSide
+
+	test = codecs.open('./emailTemplate.html', encoding='utf-8').read().encode('ascii', 'ignore').replace('REPLACE_ME',messageBody)
+
+	part = MIMEText(test,'html')
 	msg.attach(part)
 
 	#credentials are in ~/.aws/credentials
@@ -29,13 +42,15 @@ def sendEmail(listings,destination):
 	conn = boto3.client('ses', region_name='us-east-1')
 	conn.send_raw_email(RawMessage= {'Data': msg.as_string()},Source=msg['From'],Destinations=[msg['To']])
 
-def getMessageForSingleListing(listing):
+def populateTemplate(template,listing):
 
+	amountWithCommas = "{:,}".format(listing["monthly_price"])
+	monthlyPriceText = "${0} per month".format(amountWithCommas)
 
-	return """
-			<hr/>
-			<a href='%s'>
-				$%s monthly - %s <br/>
-				<img src='%s' width='300px'>
-			</a>
-			""" % (listing["source_url"], listing["monthly_price"], listing["pTitle"],listing["decrypted_img_url"])
+	populatedTemplate = template.replace('IMAGE_SRC',listing["decrypted_img_url"])
+	populatedTemplate = populatedTemplate.replace('DETAILS_TEXT',monthlyPriceText)
+	populatedTemplate = populatedTemplate.replace('HEADER',listing["pTitle"])
+	populatedTemplate = populatedTemplate.replace('LINK',listing["source_url"])
+
+	return populatedTemplate
+
