@@ -7,34 +7,43 @@ import googleMapsApiClient
 def main():
 
     #config goes here
-    suburb = "gladsville, sydney"
+    suburbs = ["Gladesville, sydney",
+               "AUBURN, sydney",
+               "Marrickville, sydney",
+               "Ryde, sydney",
+               "West Ryde, sydney"]
+
     numberOfBedRooms = "TWO"
     maxPricePerWeek = 700
     destinationEmailAddress = "homekoala@doddrell.com"
+    totalListings = []
 
-    location = googleMapsApiClient.getLatLong(suburb)
-    lat =location[0]
-    long = location[1]
-    zipcode = googleMapsApiClient.getZip(lat,long)
+    for suburb in suburbs:
 
-    json_results = homeKoalaApiClient.getListings(lat, long, zipcode, numberOfBedRooms, maxPricePerWeek)
+        location = googleMapsApiClient.getLatLong(suburb)
+        lat =location[0]
+        long = location[1]
+        zipcode = googleMapsApiClient.getZip(lat,long)
+
+        json_results = homeKoalaApiClient.getListings(lat, long, zipcode, numberOfBedRooms, maxPricePerWeek)
+
+        #also get any additional information we need.
+        for x in json_results["results"]:
+            details = homeKoalaApiClient.getListingDetail(x["sourceId"])
+            x["source_url"] =details["sourceUrl"]
+            x["monthly_price"] = int(x["askingPrice"]) * 52 / 12
+
+            if "frontCoverUrl" in x: #sometimes, no img....
+                x["decrypted_img_url"] = homeKoalaApiClient.decrypt(x["frontCoverUrl"])
+            else:
+                x["decrypted_img_url"]= ''
+
+            totalListings.append(x)
 
     #always have the most recent first.
-    listings = sorted(json_results["results"], key= lambda x: getUpdatedDateInDays(x["listingDate"]) , reverse=False )
+    totalListings = sorted(totalListings, key= lambda x: getUpdatedDateInDays(x["listingDate"]) , reverse=False )
 
-    #also get any additional information we need.
-    for x in listings:
-        details = homeKoalaApiClient.getListingDetail(x["sourceId"])
-        x["source_url"] =details["sourceUrl"]
-        x["monthly_price"] = int(x["askingPrice"]) * 52 / 12
-
-        if "frontCoverUrl" in x: #sometimes, no img....
-            x["decrypted_img_url"] = homeKoalaApiClient.decrypt(x["frontCoverUrl"])
-        else:
-            x["decrypted_img_url"]= ''
-
-
-    emailService.sendEmail(listings,destinationEmailAddress)
+    emailService.sendEmail(totalListings,destinationEmailAddress)
 
     print "email sent"
 
