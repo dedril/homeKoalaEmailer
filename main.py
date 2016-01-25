@@ -2,6 +2,7 @@ import re
 import homeKoalaApiClient
 import emailService
 import googleMapsApiClient
+import datetime
 
 
 def main():
@@ -45,7 +46,7 @@ def main():
 
     emailService.sendEmail(totalListings,destinationEmailAddress)
 
-    print "email sent"
+    print "%s: email sent to %s" % (datetime.datetime.now(), destinationEmailAddress)
 
 #helps us order the posts by a consistant value
 def getUpdatedDateInDays(dateString):
