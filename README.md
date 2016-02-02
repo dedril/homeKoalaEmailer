@@ -18,3 +18,6 @@ Simple script for crawling the homeKoala realestate website for new properties, 
 ## Config
 - the search config values can be found at the start of main.py
 - the SES email config values can be found at the start of emailService.py
+ 
+## Example Email
+![alt text]((https://raw.githubusercontent.com/dedril/homeKoalaEmailer/master/assets/homeKoalaExample.JPG "example")
