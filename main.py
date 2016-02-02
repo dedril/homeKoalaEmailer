@@ -3,7 +3,8 @@ import homeKoalaApiClient
 import emailService
 import googleMapsApiClient
 import datetime
-
+import requests.packages.urllib3
+requests.packages.urllib3.disable_warnings()
 
 def main():
 
@@ -13,6 +14,10 @@ def main():
                "Marrickville, sydney",
                "Ryde, sydney",
                "West Ryde, sydney"]
+
+    #always exclude results that mention these words
+    wordsToExclude = ["unit",
+                      "apartment"]
 
     numberOfBedRooms = "TWO"
     maxPricePerWeek = 700
@@ -39,14 +44,24 @@ def main():
             else:
                 x["decrypted_img_url"]= ''
 
-            totalListings.append(x)
+            shouldInclude = True
+            for word in wordsToExclude:
+                shouldInclude = not (word.lower() in x["pTitle"].lower()) and \
+                                not (word.lower() in details["description"].lower())
+                if not shouldInclude:
+                    print("excluding " + x["pTitle"] + " coz word found: " + word)
+                    break
+
+            if shouldInclude:
+                totalListings.append(x)
 
     #always have the most recent first.
     totalListings = sorted(totalListings, key= lambda x: getUpdatedDateInDays(x["listingDate"]) , reverse=False )
 
+
     emailService.sendEmail(totalListings,destinationEmailAddress)
 
-    print "%s: email sent to %s" % (datetime.datetime.now(), destinationEmailAddress)
+    print "%s: %s houses sent via email to %s" % (datetime.datetime.now(),len(totalListings), destinationEmailAddress)
 
 #helps us order the posts by a consistant value
 def getUpdatedDateInDays(dateString):
