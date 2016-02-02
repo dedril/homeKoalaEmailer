@@ -7,7 +7,8 @@ KEY = "hbt"
 
 def getListings(lat,long,zip,bedrooms,maxPrice):
     type = "RENT"
-    location_param = "%s,%s|%s" % (lat,long,zip)
+    search_distance_in_meters = 2900
+    location_param = "%s,%s|%s" % (lat,long,search_distance_in_meters)
     price_param  ="*-%s" % (maxPrice)
     headers = {
                 'Referer':'https://www.homekoala.com/map'
