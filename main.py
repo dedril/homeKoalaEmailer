@@ -13,6 +13,7 @@ def main():
                "AUBURN, sydney",
                "Marrickville, sydney",
                "Ryde, sydney",
+               "darlinghurst, sydney",
                "West Ryde, sydney"]
 
     #always exclude results that mention these words
