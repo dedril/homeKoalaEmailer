@@ -4,6 +4,7 @@ import emailService
 import googleMapsApiClient
 import datetime
 import requests.packages.urllib3
+import urllib
 requests.packages.urllib3.disable_warnings()
 
 def main():
@@ -41,9 +42,9 @@ def main():
             x["monthly_price"] = int(x["askingPrice"]) * 52 / 12
 
             if "frontCoverUrl" in x: #sometimes, no img....
-                x["decrypted_img_url"] = homeKoalaApiClient.decrypt(x["frontCoverUrl"])
+                x["img_url"] = "https://www.homekoala.com/c/au?url=%s" % (urllib.quote_plus(x["frontCoverUrl"]))
             else:
-                x["decrypted_img_url"]= ''
+                x["img_url"]= ''
 
             shouldInclude = True
             for word in wordsToExclude:

@@ -47,7 +47,7 @@ def populateTemplate(template,listing):
 	amountWithCommas = "{:,}".format(listing["monthly_price"])
 	monthlyPriceText = "${0} per month".format(amountWithCommas)
 
-	populatedTemplate = template.replace('IMAGE_SRC',listing["decrypted_img_url"])
+	populatedTemplate = template.replace('IMAGE_SRC',listing["img_url"])
 	populatedTemplate = populatedTemplate.replace('DETAILS_TEXT',monthlyPriceText)
 	populatedTemplate = populatedTemplate.replace('HEADER',listing["pTitle"])
 	populatedTemplate = populatedTemplate.replace('LINK',listing["source_url"])

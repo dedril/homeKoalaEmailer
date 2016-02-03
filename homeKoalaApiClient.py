@@ -1,9 +1,4 @@
 import requests
-from itertools import starmap, cycle
-
-#dont change these values, they are set by homeKoala
-ALPHA = 'abcdefghijklmnopqrstuvwxyz'
-KEY = "hbt"
 
 def getListings(lat,long,zip,bedrooms,maxPrice):
     type = "RENT"
@@ -39,9 +34,3 @@ def getListingDetail(sid):
 
     #return the first one
     return response.json()[0]
-
-def decrypt(message):#alg is vignere_decrypt
-
-    def dec(c,k): return  "%s" % unichr(((ord(c) - ord(k)) % 256) )
-
-    return "".join(starmap(dec, zip(message.decode('base64'), cycle(KEY))))
