@@ -1,8 +1,8 @@
 import requests
 
-def getListings(lat,long,zip,bedrooms,maxPrice):
+def getListings(lat,long,search_distance_in_meters,bedrooms,maxPrice):
     type = "RENT"
-    search_distance_in_meters = 2900
+
     location_param = "%s,%s|%s" % (lat,long,search_distance_in_meters)
     price_param  ="*-%s" % (maxPrice)
     headers = {

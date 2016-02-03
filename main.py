@@ -24,6 +24,8 @@ def main():
     numberOfBedRooms = "TWO"
     maxPricePerWeek = 700
     destinationEmailAddress = "homekoala@doddrell.com"
+    search_distance_in_meters = 2900
+
     totalListings = []
 
     for suburb in suburbs:
@@ -31,9 +33,8 @@ def main():
         location = googleMapsApiClient.getLatLong(suburb)
         lat =location[0]
         long = location[1]
-        zipcode = googleMapsApiClient.getZip(lat,long)
 
-        json_results = homeKoalaApiClient.getListings(lat, long, zipcode, numberOfBedRooms, maxPricePerWeek)
+        json_results = homeKoalaApiClient.getListings(lat, long, search_distance_in_meters, numberOfBedRooms, maxPricePerWeek)
 
         #also get any additional information we need.
         for x in json_results["results"]:
@@ -45,6 +46,8 @@ def main():
                 x["img_url"] = "https://www.homekoala.com/c/au?url=%s" % (urllib.quote_plus(x["frontCoverUrl"]))
             else:
                 x["img_url"]= ''
+
+            x["url_link"] = "https://www.homekoala.com/map/p/%s/?sb=r&c.d.pf=RENT&c.r.pz=%s,%s%%7C%s" % (x["sourceId"],lat,long,search_distance_in_meters)
 
             shouldInclude = True
             for word in wordsToExclude:

@@ -50,7 +50,7 @@ def populateTemplate(template,listing):
 	populatedTemplate = template.replace('IMAGE_SRC',listing["img_url"])
 	populatedTemplate = populatedTemplate.replace('DETAILS_TEXT',monthlyPriceText)
 	populatedTemplate = populatedTemplate.replace('HEADER',listing["pTitle"])
-	populatedTemplate = populatedTemplate.replace('LINK',listing["source_url"])
+	populatedTemplate = populatedTemplate.replace('LINK',listing["url_link"])
 
 	return populatedTemplate
 
