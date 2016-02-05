@@ -23,7 +23,7 @@ def sendEmail(listings,destination):
 	leftTemplate = codecs.open('./emailTemplateLeft.html', encoding='utf-8').read().encode('ascii', 'ignore')
 	rightTemplate = codecs.open('./emailTemplateRight.html', encoding='utf-8').read().encode('ascii', 'ignore')
 
-	isRightSide = True
+	isRightSide = False
 	for listing in listings:
 		if isRightSide:
 			messageBody += populateTemplate(rightTemplate,listing)
