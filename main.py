@@ -60,13 +60,14 @@ def main():
             if shouldInclude:
                 totalListings.append(x)
 
-    #always have the most recent first.
-    totalListings = sorted(totalListings, key= lambda x: getUpdatedDateInDays(x["listingDate"]) , reverse=False )
+    #only show the new listings from today
+    todaysListings = [x for x in totalListings if getUpdatedDateInDays(x["listingDate"]) <= 1]
 
-
-    emailService.sendEmail(totalListings,destinationEmailAddress)
-
-    print "%s: %s houses sent via email to %s" % (datetime.datetime.now(),len(totalListings), destinationEmailAddress)
+    if len(todaysListings) > 0:
+        emailService.sendEmail(todaysListings,destinationEmailAddress)
+        print "%s: %s houses sent via email to %s" % (datetime.datetime.now(),len(todaysListings), destinationEmailAddress)
+    else:
+        print "%s: No new updates today" % (datetime.datetime.now())
 
 #helps us order the posts by a consistant value
 def getUpdatedDateInDays(dateString):
