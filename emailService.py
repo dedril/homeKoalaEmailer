@@ -44,12 +44,15 @@ def sendEmail(listings,destination):
 
 def populateTemplate(template,listing):
 
-	amountWithCommas = "{:,}".format(listing["monthly_price"])
-	monthlyPriceText = "${0} per month".format(amountWithCommas)
+	monthlyAmountWithCommas = "{:,}".format(listing["monthly_price"])
+	monthlyPriceText = "${0} per month".format(monthlyAmountWithCommas)
+
+	avgAmountWithCommas = "{:,}".format(int(listing["median_price"])) #int removes the decimals
 
 	populatedTemplate = template.replace('IMAGE_SRC',listing["img_url"])
-	populatedTemplate = populatedTemplate.replace('DETAILS_TEXT',monthlyPriceText)
-	populatedTemplate = populatedTemplate.replace('HEADER',listing["pTitle"])
+	populatedTemplate = populatedTemplate.replace('MONTHLY_PRICE_TEXT',monthlyPriceText)
+	populatedTemplate = populatedTemplate.replace('AVG_PRICE',avgAmountWithCommas)
+	populatedTemplate = populatedTemplate.replace('HEADER_TEXT',listing["pTitle"])
 	populatedTemplate = populatedTemplate.replace('LINK',listing["url_link"])
 
 	return populatedTemplate
