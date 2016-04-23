@@ -6,6 +6,7 @@ import datetime
 import requests.packages.urllib3
 import urllib
 requests.packages.urllib3.disable_warnings()
+from cache import Cache
 
 def main():
 
@@ -37,6 +38,8 @@ def main():
         listing_results = homeKoalaApiClient.getListings(lat, long, search_distance_in_meters, numberOfBedRooms, maxPricePerWeek)
         stats = homeKoalaApiClient.getStats(lat, long, search_distance_in_meters, numberOfBedRooms, maxPricePerWeek)
 
+        cache = Cache()
+
         #also get any additional information we need.
         for x in listing_results["results"]:
             details = homeKoalaApiClient.getListingDetail(x["sourceId"])
@@ -64,16 +67,17 @@ def main():
                     print("excluding " + x["pTitle"] + " coz word found: " + word)
                     break
 
+            if cache.haveSeenProperty(x["sourceId"]):
+                shouldInclude = False
+
             if shouldInclude:
                 totalListings.append(x)
+                #mark as seen
+                cache.markPropertyAsSeen(x["sourceId"])
 
-
-    #only show the new listings from today
-    todaysListings = [x for x in totalListings if getUpdatedDateInDays(x["listingDate"]) <= 1]
-
-    if len(todaysListings) > 0:
-        emailService.sendEmail(todaysListings,destinationEmailAddress)
-        print "%s: %s houses sent via email to %s" % (datetime.datetime.now(),len(todaysListings), destinationEmailAddress)
+    if len(totalListings) > 0:
+        emailService.sendEmail(totalListings,destinationEmailAddress)
+        print "%s: %s houses sent via email to %s" % (datetime.datetime.now(),len(totalListings), destinationEmailAddress)
     else:
         print "%s: No new updates today" % (datetime.datetime.now())
 
