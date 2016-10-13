@@ -11,16 +11,23 @@ from cache import Cache
 def main():
 
     #config goes here
-    suburbs = ["Gladesville, sydney",
-               "AUBURN, sydney",
-               "Marrickville, sydney",
-               "Ryde, sydney",
-               "darlinghurst, sydney",
-               "West Ryde, sydney"]
+    suburbs = ["Dee Why, sydney",
+               "Cronulla, sydney",
+               "Caringbah, sydney",
+               "Miranda, sydney",
+               "kirrawee, sydney",
+                "Maroubra, sydney",
+                "South Coogee, sydney",
+                "Coogee, sydney",
+                "Clovelly, sydney",
+                "Bondi, sydney",
+                "North Curl Curl, sydney",
+                "Freshwater, sydney",
+                "manly, sydney"
+               ]
 
     #always exclude results that mention these words
-    wordsToExclude = ["unit",
-                      "apartment"]
+    wordsToExclude = []
 
     numberOfBedRooms = "TWO"
     maxPricePerWeek = 700
